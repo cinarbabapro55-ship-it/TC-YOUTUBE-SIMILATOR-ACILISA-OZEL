@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YT Tycoon: ADMIN UNLOCK</title>
+    <title>YT Tycoon: GLOBAL ADMIN MOD</title>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
     
@@ -11,10 +11,10 @@
         :root { --yt-red: #ff0000; --terminal-green: #00ff00; --bg: #050505; --gold: #ffcc00; }
         body { font-family: 'Consolas', monospace; background: var(--bg); color: white; margin: 0; overflow: hidden; }
         
-        /* TERMINAL PANELİ */
+        /* TERMINAL */
         #console-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 50%; 
-            background: rgba(0, 0, 0, 0.98); border-bottom: 2px solid var(--terminal-green); 
+            background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid var(--terminal-green); 
             z-index: 10000; display: none; padding: 20px; box-sizing: border-box;
         }
         #console-output { height: 85%; overflow-y: auto; font-size: 14px; color: var(--terminal-green); }
@@ -34,33 +34,29 @@
 <body>
 
     <div id="console-overlay">
-        <div id="console-output"><div>--- ADMIN TERMINAL v15.7 (AKTİF) ---</div></div>
+        <div id="console-output"><div>--- GLOBAL ADMIN PANEL v15.9 ---</div></div>
         <input type="text" id="console-input" placeholder="komut yaz..." autocomplete="off">
     </div>
 
     <div id="login">
-        <h2 style="color: var(--yt-red);">SİSTEME GİRİŞ</h2>
+        <h2 style="color: var(--yt-red);">ADMIN_LOGIN</h2>
         <input type="text" id="user-in" placeholder="ADINIZI YAZIN">
         <button onclick="boot()" style="padding:12px 40px; cursor:pointer; background:var(--yt-red); color:white; border:none; border-radius: 5px;">BAĞLAN</button>
     </div>
 
     <div class="stats-bar">
-        <div>ABONE <br><span id="s-abone" class="stat-val">0</span></div>
-        <div>BAKİYE <br><span id="s-para" class="stat-val">0 ₺</span></div>
-        <div>İZLENME <br><span id="s-izlenme" class="stat-val">0</span></div>
-        <div>YETKİ <br><span id="s-status" style="color:var(--terminal-green);">BAĞLANIYOR...</span></div>
+        <div>ABONE: <span id="s-abone" class="stat-val">0</span></div>
+        <div>BAKİYE: <span id="s-para" class="stat-val">0 ₺</span></div>
+        <div>İZLENME: <span id="s-izlenme" class="stat-val">0</span></div>
+        <div>YETKİ: <span id="s-status" style="color:var(--terminal-green);">OKUMA...</span></div>
     </div>
 
     <div class="wrapper">
-        <div style="background:#0a0a0a; padding:15px; border-right:1px solid #222;">
-            MARKET
-            <br><br>
-            <button onclick="makeMeAdmin()" style="background:#222; color:#444; border:1px solid #333; font-size:10px; cursor:pointer;">GİZLİ YETKİ AL</button>
-        </div>
+        <div style="background:#0a0a0a; padding:15px; border-right:1px solid #222;">MARKET (YAKINDA)</div>
         <div class="main-zone">
             <h1 id="brand-name" style="color:#444;">ONLINE NETWORK</h1>
             <button class="video-btn" onclick="upload()">VİDEO YÜKLE</button>
-            <p style="color:#222; font-size:10px; margin-top:30px;">Terminal için Q veya F2 tuşuna bas.</p>
+            <p style="color:#222; font-size:10px; margin-top:30px;">Q veya F2 ile Terminali aç.</p>
         </div>
         <div class="player-list">
             <h3 style="font-size:11px; color:var(--terminal-green);">ONLINE OYUNCULAR</h3>
@@ -83,37 +79,23 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let state = { a: 0, p: 0, i: 0, name: "", role: "OYUNCU", mult: 1 };
+        let state = { a: 0, p: 0, i: 0, name: "", role: "KURUCU", mult: 1 };
 
         function boot() {
             let n = document.getElementById('user-in').value.trim();
             if(n.length < 2) return;
             state.name = n;
-            
-            // HERKESİ KURUCU YAPMAK İÇİN BU SATIRI DEĞİŞTİRDİM
-            state.role = "KURUCU"; 
-            
             document.getElementById('login').style.display = 'none';
             document.getElementById('brand-name').innerText = n.toUpperCase();
             updateUI();
-
             db.ref('players').on('value', (snap) => renderNodes(snap.val() || {}));
             save();
         }
 
-        // Eğer bir şekilde "OYUNCU" kalırsan bu buton seni KURUCU yapar
-        function makeMeAdmin() {
-            state.role = "KURUCU";
-            updateUI();
-            save();
-            log("YETKİ ALINDI: KURUCU MODU AKTİF.");
-        }
-
         function save() {
             if(!state.name) return;
-            db.ref('players/' + state.name).set({
-                n: state.name, p: state.p, a: state.a, i: state.i, r: state.role,
-                d: "PC", t: Date.now()
+            db.ref('players/' + state.name).update({
+                n: state.name, p: state.p, a: state.a, i: state.i, r: state.role, t: Date.now()
             });
         }
 
@@ -142,14 +124,11 @@
             document.getElementById('s-abone').innerText = state.a.toLocaleString();
             document.getElementById('s-izlenme').innerText = state.i.toLocaleString();
             document.getElementById('s-status').innerText = state.role;
-            document.getElementById('s-status').style.color = state.role === "KURUCU" ? "var(--gold)" : "var(--terminal-green)";
         }
 
-        // TERMINAL TUŞLARI
+        // TERMINAL SİSTEMİ
         window.addEventListener('keydown', (e) => {
-            // Hem Q hem F2 çalışır
             if(e.key.toLowerCase() === "q" || e.key === "F2") {
-                if(state.role !== "KURUCU") return;
                 const con = document.getElementById('console-overlay');
                 con.style.display = con.style.display === "block" ? "none" : "block";
                 if(con.style.display === "block") document.getElementById('console-input').focus();
@@ -176,10 +155,35 @@
         function exec(cmd) {
             let p = cmd.split(" ");
             let m = p[0].toLowerCase();
-            if(m === "para") { state.p = parseInt(p[1]) || 0; log("Bakiye: " + p[1]); }
-            else if(m === "hiz") { state.mult = parseInt(p[1]) || 1; log("Hız: x" + p[1]); }
-            else if(m === "reset") { db.ref('players').remove(); log("TÜM SERVER SİLİNDİ", "red"); }
-            else { log("Hata: Komut anlaşılamadı.", "red"); }
+            
+            switch(m) {
+                case "para": 
+                    state.p = parseInt(p[1]) || 0; 
+                    log("Kendi paran ayarlandı: " + p[1]); break;
+                case "abone": 
+                    state.a = parseInt(p[1]) || 0; 
+                    log("Kendi abonen ayarlandı: " + p[1]); break;
+                case "hiz": 
+                    state.mult = parseInt(p[1]) || 1; 
+                    log("Tıklama gücü: x" + p[1]); break;
+                case "parabas":
+                    // BAŞKASINA PARA BASMA KOMUTU
+                    let hedef = p[1];
+                    let miktar = parseInt(p[2]);
+                    if(hedef && miktar) {
+                        db.ref('players/' + hedef).update({ p: miktar });
+                        log(hedef + " isimli oyuncuya " + miktar + " ₺ gönderildi!", "var(--gold)");
+                    } else {
+                        log("Hata! Kullanım: parabas [isim] [miktar]", "red");
+                    }
+                    break;
+                case "reset":
+                    db.ref('players').remove();
+                    log("SERVER SIFIRLANDI", "red"); break;
+                case "yardim":
+                    log("KOMUTLAR: para, abone, hiz, parabas [isim] [miktar], reset"); break;
+                default: log("Bilinmeyen komut!", "red");
+            }
             updateUI();
             save();
         }
