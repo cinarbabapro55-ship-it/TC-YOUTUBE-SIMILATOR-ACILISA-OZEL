@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>TC YOUTUBE SİMİLATÖR:AÇILIŞA ÖZEL</title>
+    <title>YT Tycoon: KURUCU PANELİ</title>
     <style>
         :root { --yt-red: #ff0000; --terminal-green: #00ff00; --bg: #050505; --card: #121212; --gold: #ffcc00; }
         body { font-family: 'Consolas', monospace; background: var(--bg); color: white; margin: 0; overflow: hidden; }
@@ -28,28 +28,30 @@
         .shop-card button:disabled { background: #222; color: #555; }
 
         .main-zone { padding: 40px; text-align: center; background: radial-gradient(circle at center, #111 0%, #050505 100%); }
-        .video-btn { width: 200px; height: 200px; border-radius: 50%; border: none; background: var(--yt-red); color: white; cursor: pointer; font-size: 22px; font-weight: bold; box-shadow: 0 0 40px rgba(255, 0, 0, 0.3); transition: 0.1s; }
+        .video-btn { width: 180px; height: 180px; border-radius: 50%; border: none; background: var(--yt-red); color: white; cursor: pointer; font-size: 20px; font-weight: bold; box-shadow: 0 0 40px rgba(255, 0, 0, 0.3); transition: 0.1s; }
         .video-btn:active { transform: scale(0.95); }
 
         .player-list { background: #0d0d0d; padding: 15px; border-left: 1px solid #222; }
         .player-box { padding: 10px; border-bottom: 1px solid #222; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
         .badge { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: bold; border: 1px solid; }
 
+        #admin-badge { display: none; background: var(--yt-red); color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; margin-top: 10px; display: inline-block; font-weight: bold; }
+
         #login { position: fixed; inset: 0; background: #000; z-index: 8888; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        #login input { padding: 12px; width: 250px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; margin-bottom: 15px; text-align: center; }
+        #login input { padding: 12px; width: 250px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; margin-bottom: 15px; text-align: center; outline: none; }
     </style>
 </head>
 <body>
 
     <div id="login">
-        <h2 style="letter-spacing: 8px; color: var(--yt-red);">LANSMAN_MODU</h2>
-        <input type="text" id="user-in" placeholder="KURUCU_ADI" autocomplete="off">
-        <button onclick="boot()" style="padding:12px 40px; cursor:pointer; background:var(--yt-red); color:white; border:none; font-weight:bold; border-radius: 5px;">SİSTEMİ BAŞLAT</button>
+        <h2 style="letter-spacing: 8px; color: var(--yt-red);">SİSTEME_GİRİŞ</h2>
+        <input type="text" id="user-in" placeholder="KULLANICI ADI" autocomplete="off">
+        <button onclick="boot()" style="padding:12px 40px; cursor:pointer; background:var(--yt-red); color:white; border:none; font-weight:bold; border-radius: 5px;">BAĞLAN</button>
     </div>
 
     <div id="console-overlay">
-        <div id="console-output"><div>--- LANSMAN ÖZEL SİSTEM v12.0 ---</div><div style="color:gold">>> AKTİF: 3 GÜNLÜK ÜCRETSİZ YÜKSELTMELER!</div></div>
-        <input type="text" id="console-input" placeholder="root@sistem:~#" autocomplete="off">
+        <div id="console-output"><div>--- GÜVENLİ ERİŞİM PANELİ v13.0 ---</div></div>
+        <input type="text" id="console-input" placeholder="komut bekliyor..." autocomplete="off">
     </div>
 
     <div class="stats-bar">
@@ -61,28 +63,32 @@
 
     <div class="wrapper">
         <div class="market-side">
-            <h3 style="font-size:11px; color:#555; border-bottom:1px solid #333; padding-bottom:5px; margin-top:0;">BEDAVA_MARKET (3 GÜN)</h3>
+            <h3 style="font-size:11px; color:#555; border-bottom:1px solid #333; padding-bottom:5px; margin-top:0;">BEDAVA_MARKET (ETKİNLİK)</h3>
             <div id="shop-list"></div>
         </div>
         
         <div class="main-zone">
-            <h1 id="brand-name" style="margin-top:0; color: #444;">BEKLEMEDE</h1>
+            <h1 id="brand-name" style="margin-top:0; color: #444;">GİRİŞ YAPILDI</h1>
+            <div id="admin-indicator" style="display:none; margin-bottom: 20px;">
+                <span id="admin-badge">SİSTEM KURUCUSU</span>
+            </div>
             <button class="video-btn" onclick="upload()">VİDEO YÜKLE</button>
             <div id="notif" style="margin-top:30px; color:var(--gold); font-weight:bold; font-size:18px;"></div>
         </div>
 
         <div class="player-list">
-            <h3 style="font-size:11px; color:#555; border-bottom:1px solid #333; padding-bottom:5px; margin-top:0;">NETWORK_NODES</h3>
+            <h3 style="font-size:11px; color:#555; border-bottom:1px solid #333; padding-bottom:5px; margin-top:0;">AKTİF BAĞLANTILAR</h3>
             <div id="node-list"></div>
         </div>
     </div>
 
     <script>
-        let state = { a: 0, p: 0, i: 0, income: 0, mult: 1, name: "", players: [] };
-        
-        // --- KAMPANYA AYARLARI ---
+        // --- AYARLAR (BURAYI DÜZENLE) ---
+        const KURUCU_KIMLIGI = "patron"; // Sadece bu isimle giren "KURUCU" olur
+        const START_BONUS = 100000;
         const IS_FREE_EVENT = true; // Yükseltmeler 0 TL mi?
-        const START_BONUS = 100000; // Yeni gelenlere verilecek para
+
+        let state = { a: 0, p: 0, i: 0, income: 0, mult: 1, name: "", role: "OYUNCU", players: [] };
 
         const items = [
             { id: 0, f: 50, g: 15, lvl: 0, names: ["Eski Klavye", "Ofis Klavyesi", "Işıklı Klavye", "Mekanik Klavye", "Özel Yapım Mekanik"] },
@@ -93,15 +99,23 @@
         ];
 
         function boot() {
-            let n = document.getElementById('user-in').value;
+            let n = document.getElementById('user-in').value.trim();
             if(n.length < 2) return;
+            
             state.name = n;
             document.getElementById('login').style.display = 'none';
             document.getElementById('brand-name').innerText = n.toUpperCase();
             
-            // Kurucu olarak sen de bonusla başla
+            // KİMLİK KONTROLÜ
+            if(n.toLowerCase() === KURUCU_KIMLIGI) {
+                state.role = "KURUCU";
+                document.getElementById('admin-indicator').style.display = 'block';
+            } else {
+                state.role = "OYUNCU";
+            }
+            
             state.p = START_BONUS;
-            state.players.push({n: n, r: "KURUCU", cash: START_BONUS});
+            state.players.push({n: n, r: state.role, cash: START_BONUS});
             
             render();
             update();
@@ -125,11 +139,9 @@
                 let b = document.getElementById('btn-'+i);
                 let title = document.getElementById('title-'+i);
                 if(b) {
-                    // KAMPANYA: 0 TL kontrolü
                     let cost = IS_FREE_EVENT ? 0 : Math.floor(item.f * Math.pow(0.90, item.lvl));
-                    b.innerText = item.lvl >= 20 ? "MAKS. SEVİYE" : (IS_FREE_EVENT ? "BEDAVA YÜKSELT" : cost + " ₺ YÜKSELT");
+                    b.innerText = item.lvl >= 20 ? "MAKS. SEVİYE" : (IS_FREE_EVENT ? "ÜCRETSİZ" : cost + " ₺");
                     b.disabled = state.p < cost || item.lvl >= 20;
-                    
                     let nameIdx = Math.min(Math.floor(item.lvl / 4), item.names.length - 1);
                     title.innerText = item.names[nameIdx];
                 }
@@ -154,9 +166,9 @@
             const nl = document.getElementById('node-list');
             nl.innerHTML = "";
             state.players.forEach(p => {
-                let color = p.r == 'KURUCU' ? 'var(--gold)' : (p.r == 'ADMİN' ? 'cyan' : '#888');
+                let color = p.r == 'KURUCU' ? 'var(--gold)' : '#888';
                 nl.innerHTML += `<div class="player-box">
-                    <span>${p.n} <small style="color:#555">(${p.cash.toLocaleString()}₺)</small></span>
+                    <span>${p.n} <small style="color:#444">(${p.cash.toLocaleString()}₺)</small></span>
                     <span class="badge" style="color:${color}; border-color:${color}">${p.r}</span>
                 </div>`;
             });
@@ -167,19 +179,25 @@
             let cost = IS_FREE_EVENT ? 0 : Math.floor(item.f * Math.pow(0.90, item.lvl));
             if(state.p >= cost && item.lvl < 20) {
                 state.p -= cost;
-                state.income += item.g + (item.lvl * 15); 
+                state.income += item.g + (item.lvl * 20); 
                 item.lvl++;
                 document.getElementById('lvl-'+i).innerText = `SEV ${item.lvl}/20`;
                 update();
             }
         }
 
+        // --- TERMİNAL VE ADMIN YETKİLERİ ---
         const con = document.getElementById('console-overlay');
         const cin = document.getElementById('console-input');
         const cout = document.getElementById('console-output');
 
         window.addEventListener('keydown', (e) => {
             if(e.key === "F2") {
+                // Sadece KURUCU terminali açabilir
+                if(state.role !== "KURUCU") {
+                    alert("Erişim Reddedildi: Terminal sadece KURUCU içindir.");
+                    return;
+                }
                 e.preventDefault();
                 con.style.display = con.style.display === "block" ? "none" : "block";
                 if(con.style.display === "block") cin.focus();
@@ -206,25 +224,18 @@
             let p = cmd.split(" ");
             let m = p[0].toLowerCase();
             switch(m) {
-                case "cmds":
-                    log("--- LANSMAN YETKİLERİ ---");
-                    log("para [miktar] | hiz [çarpan] | ekle [isim]");
-                    log("duyuru [mesaj] | temizle");
-                    break;
-                case "para": state.p = parseInt(p[1]) || 0; log("Nakit güncellendi."); break;
-                case "hiz": state.mult = parseInt(p[1]) || 1; log("Hız ok."); break;
-                case "ekle": 
-                    let nName = p.slice(1).join("_");
-                    state.players.push({n: nName, r: "OYUNCU", cash: START_BONUS}); 
-                    log(nName + " 100K bonusla eklendi.");
-                    renderNodes(); break;
+                case "para": state.p = parseInt(p[1]) || 0; log("Nakit ayarlandı."); break;
+                case "hiz": state.mult = parseInt(p[1]) || 1; log("Hız: x" + state.mult); break;
                 case "duyuru": 
                     let nbox = document.getElementById('notif');
                     nbox.innerText = "📢 " + p.slice(1).join(" ").toUpperCase();
                     setTimeout(() => nbox.innerText = "", 5000);
                     break;
+                case "ekle":
+                    state.players.push({n: p.slice(1).join("_"), r: "OYUNCU", cash: START_BONUS});
+                    renderNodes(); log("Sanal oyuncu eklendi."); break;
                 case "temizle": cout.innerHTML = ""; break;
-                default: log("HATA: GEÇERSİZ", "red");
+                default: log("GEÇERSİZ KOMUT", "red");
             }
             update();
         }
