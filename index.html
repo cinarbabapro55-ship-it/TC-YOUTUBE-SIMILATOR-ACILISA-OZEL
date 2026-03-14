@@ -2,11 +2,19 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>YT Tycoon: KURUCU PANELİ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YT Tycoon: GLOBAL NETWORK</title>
     <style>
         :root { --yt-red: #ff0000; --terminal-green: #00ff00; --bg: #050505; --card: #121212; --gold: #ffcc00; }
-        body { font-family: 'Consolas', monospace; background: var(--bg); color: white; margin: 0; overflow: hidden; }
+        body { font-family: 'Consolas', monospace; background: var(--bg); color: white; margin: 0; overflow-x: hidden; }
         
+        /* Mobil Uyumluluk Ayarları */
+        @media (max-width: 768px) {
+            .wrapper { grid-template-columns: 1fr !important; height: auto !important; }
+            .market-side, .player-list { border: none !important; height: 300px; }
+            .stats-bar { grid-template-columns: 1fr 1fr; font-size: 14px; }
+        }
+
         #console-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 60%; 
             background: rgba(0, 0, 0, 0.98); border-bottom: 2px solid var(--terminal-green); 
@@ -22,20 +30,17 @@
         
         .market-side { background: #0d0d0d; padding: 15px; overflow-y: auto; border-right: 1px solid #222; }
         .shop-card { background: var(--card); padding: 15px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #333; position: relative; }
-        .shop-card h4 { margin: 0; color: #3ea6ff; font-size: 13px; text-transform: uppercase; width: 75%; }
+        .shop-card h4 { margin: 0; color: #3ea6ff; font-size: 13px; text-transform: uppercase; }
         .shop-card .lvl { position: absolute; top: 15px; right: 15px; color: var(--gold); font-size: 11px; }
         .shop-card button { width: 100%; margin-top: 10px; padding: 10px; background: var(--yt-red); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .shop-card button:disabled { background: #222; color: #555; }
 
         .main-zone { padding: 40px; text-align: center; background: radial-gradient(circle at center, #111 0%, #050505 100%); }
         .video-btn { width: 180px; height: 180px; border-radius: 50%; border: none; background: var(--yt-red); color: white; cursor: pointer; font-size: 20px; font-weight: bold; box-shadow: 0 0 40px rgba(255, 0, 0, 0.3); transition: 0.1s; }
-        .video-btn:active { transform: scale(0.95); }
 
-        .player-list { background: #0d0d0d; padding: 15px; border-left: 1px solid #222; }
-        .player-box { padding: 10px; border-bottom: 1px solid #222; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .player-list { background: #0d0d0d; padding: 15px; border-left: 1px solid #222; overflow-y: auto; }
+        .player-box { padding: 10px; border-bottom: 1px solid #222; font-size: 12px; }
+        .device-icon { font-size: 10px; color: #555; margin-left: 5px; }
         .badge { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: bold; border: 1px solid; }
-
-        #admin-badge { display: none; background: var(--yt-red); color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; margin-top: 10px; display: inline-block; font-weight: bold; }
 
         #login { position: fixed; inset: 0; background: #000; z-index: 8888; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         #login input { padding: 12px; width: 250px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; margin-bottom: 15px; text-align: center; outline: none; }
@@ -44,14 +49,14 @@
 <body>
 
     <div id="login">
-        <h2 style="letter-spacing: 8px; color: var(--yt-red);">SİSTEME_GİRİŞ</h2>
+        <h2 style="letter-spacing: 8px; color: var(--yt-red);">BAĞLANTI_KURULUYOR</h2>
         <input type="text" id="user-in" placeholder="KULLANICI ADI" autocomplete="off">
-        <button onclick="boot()" style="padding:12px 40px; cursor:pointer; background:var(--yt-red); color:white; border:none; font-weight:bold; border-radius: 5px;">BAĞLAN</button>
+        <button onclick="boot()" style="padding:12px 40px; cursor:pointer; background:var(--yt-red); color:white; border:none; font-weight:bold; border-radius: 5px;">SİSTEME GİR</button>
     </div>
 
     <div id="console-overlay">
-        <div id="console-output"><div>--- GÜVENLİ ERİŞİM PANELİ v13.0 ---</div></div>
-        <input type="text" id="console-input" placeholder="komut bekliyor..." autocomplete="off">
+        <div id="console-output"><div>--- GLOBAL NETWORK v14.0 ---</div></div>
+        <input type="text" id="console-input" placeholder="root@admin:~#" autocomplete="off">
     </div>
 
     <div class="stats-bar">
@@ -63,32 +68,28 @@
 
     <div class="wrapper">
         <div class="market-side">
-            <h3 style="font-size:11px; color:#555; border-bottom:1px solid #333; padding-bottom:5px; margin-top:0;">BEDAVA_MARKET (ETKİNLİK)</h3>
+            <h3 style="font-size:11px; color:#555; border-bottom:1px solid #333; padding-bottom:5px;">MARKET</h3>
             <div id="shop-list"></div>
         </div>
         
         <div class="main-zone">
-            <h1 id="brand-name" style="margin-top:0; color: #444;">GİRİŞ YAPILDI</h1>
+            <h1 id="brand-name" style="margin-top:0; color: #444;">OFFLINE</h1>
             <div id="admin-indicator" style="display:none; margin-bottom: 20px;">
-                <span id="admin-badge">SİSTEM KURUCUSU</span>
+                <span style="background:var(--yt-red); color:white; padding:5px 10px; border-radius:4px; font-size:12px; font-weight:bold;">SİSTEM KURUCUSU</span>
             </div>
             <button class="video-btn" onclick="upload()">VİDEO YÜKLE</button>
             <div id="notif" style="margin-top:30px; color:var(--gold); font-weight:bold; font-size:18px;"></div>
         </div>
 
         <div class="player-list">
-            <h3 style="font-size:11px; color:#555; border-bottom:1px solid #333; padding-bottom:5px; margin-top:0;">AKTİF BAĞLANTILAR</h3>
+            <h3 style="font-size:11px; color:#555; border-bottom:1px solid #333; padding-bottom:5px;">BAĞLI CİHAZLAR</h3>
             <div id="node-list"></div>
         </div>
     </div>
 
     <script>
-        // --- AYARLAR (BURAYI DÜZENLE) ---
-        const KURUCU_KIMLIGI = "patron"; // Sadece bu isimle giren "KURUCU" olur
-        const START_BONUS = 100000;
-        const IS_FREE_EVENT = true; // Yükseltmeler 0 TL mi?
-
-        let state = { a: 0, p: 0, i: 0, income: 0, mult: 1, name: "", role: "OYUNCU", players: [] };
+        const KURUCU_KIMLIGI = "patron"; // Kurucu ismi
+        let state = { a: 0, p: 0, i: 0, income: 0, mult: 1, name: "", role: "OYUNCU", device: "PC", players: [] };
 
         const items = [
             { id: 0, f: 50, g: 15, lvl: 0, names: ["Eski Klavye", "Ofis Klavyesi", "Işıklı Klavye", "Mekanik Klavye", "Özel Yapım Mekanik"] },
@@ -103,22 +104,28 @@
             if(n.length < 2) return;
             
             state.name = n;
+            // Cihaz algılama
+            state.device = /Android|iPhone/i.test(navigator.userAgent) ? "MOBİL" : "PC";
+            
             document.getElementById('login').style.display = 'none';
             document.getElementById('brand-name').innerText = n.toUpperCase();
             
-            // KİMLİK KONTROLÜ
             if(n.toLowerCase() === KURUCU_KIMLIGI) {
                 state.role = "KURUCU";
                 document.getElementById('admin-indicator').style.display = 'block';
-            } else {
-                state.role = "OYUNCU";
             }
             
-            state.p = START_BONUS;
-            state.players.push({n: n, r: state.role, cash: START_BONUS});
+            state.p = 100000;
+            // Kendimizi ekleyelim
+            addPlayerToList(n, state.role, state.device, state.p);
             
             render();
             update();
+        }
+
+        function addPlayerToList(name, role, device, cash) {
+            state.players.push({n: name, r: role, d: device, c: cash});
+            renderNodes();
         }
 
         function upload() {
@@ -126,6 +133,9 @@
             state.i += bonus;
             state.a += Math.floor(bonus / 10);
             state.p += Math.floor(bonus / 3);
+            // Kendi paramızı listede güncelleyelim
+            state.players[0].c = state.p;
+            renderNodes();
             update();
         }
 
@@ -139,9 +149,9 @@
                 let b = document.getElementById('btn-'+i);
                 let title = document.getElementById('title-'+i);
                 if(b) {
-                    let cost = IS_FREE_EVENT ? 0 : Math.floor(item.f * Math.pow(0.90, item.lvl));
-                    b.innerText = item.lvl >= 20 ? "MAKS. SEVİYE" : (IS_FREE_EVENT ? "ÜCRETSİZ" : cost + " ₺");
-                    b.disabled = state.p < cost || item.lvl >= 20;
+                    let cost = 0; // Bedava kampanya devam
+                    b.innerText = item.lvl >= 20 ? "MAKS" : "ÜCRETSİZ";
+                    b.disabled = item.lvl >= 20;
                     let nameIdx = Math.min(Math.floor(item.lvl / 4), item.names.length - 1);
                     title.innerText = item.names[nameIdx];
                 }
@@ -155,7 +165,6 @@
                 sl.innerHTML += `<div class="shop-card">
                     <span class="lvl" id="lvl-${i}">SEV ${item.lvl}/20</span>
                     <h4 id="title-${i}">${item.names[0]}</h4>
-                    <small>Gelir: +${item.g}/sn</small>
                     <button id="btn-${i}" onclick="buy(${i})">YÜKSELT</button>
                 </div>`;
             });
@@ -168,82 +177,44 @@
             state.players.forEach(p => {
                 let color = p.r == 'KURUCU' ? 'var(--gold)' : '#888';
                 nl.innerHTML += `<div class="player-box">
-                    <span>${p.n} <small style="color:#444">(${p.cash.toLocaleString()}₺)</small></span>
-                    <span class="badge" style="color:${color}; border-color:${color}">${p.r}</span>
+                    <div style="display:flex; justify-content:space-between">
+                        <b style="color:${color}">${p.n}</b>
+                        <span class="badge" style="color:${color}; border-color:${color}">${p.r}</span>
+                    </div>
+                    <div style="margin-top:5px; font-size:10px; color:#555">
+                        ${p.c.toLocaleString()} ₺ • Cihaz: ${p.d}
+                    </div>
                 </div>`;
             });
         }
 
         function buy(i) {
             let item = items[i];
-            let cost = IS_FREE_EVENT ? 0 : Math.floor(item.f * Math.pow(0.90, item.lvl));
-            if(state.p >= cost && item.lvl < 20) {
-                state.p -= cost;
+            if(item.lvl < 20) {
                 state.income += item.g + (item.lvl * 20); 
                 item.lvl++;
                 document.getElementById('lvl-'+i).innerText = `SEV ${item.lvl}/20`;
+                state.players[0].c = state.p;
+                renderNodes();
                 update();
             }
         }
 
-        // --- TERMİNAL VE ADMIN YETKİLERİ ---
-        const con = document.getElementById('console-overlay');
-        const cin = document.getElementById('console-input');
-        const cout = document.getElementById('console-output');
-
+        // Terminal Ayarları (F2)
         window.addEventListener('keydown', (e) => {
-            if(e.key === "F2") {
-                // Sadece KURUCU terminali açabilir
-                if(state.role !== "KURUCU") {
-                    alert("Erişim Reddedildi: Terminal sadece KURUCU içindir.");
-                    return;
-                }
+            if(e.key === "F2" && state.role === "KURUCU") {
                 e.preventDefault();
                 con.style.display = con.style.display === "block" ? "none" : "block";
-                if(con.style.display === "block") cin.focus();
+                document.getElementById('console-input').focus();
             }
         });
-
-        cin.addEventListener('keypress', (e) => {
-            if(e.key === "Enter") {
-                let val = cin.value.trim();
-                if(val) exec(val);
-                cin.value = "";
-            }
-        });
-
-        function log(m, c = "var(--terminal-green)") {
-            let d = document.createElement('div');
-            d.style.color = c;
-            d.innerText = ">> " + m;
-            cout.appendChild(d);
-            cout.scrollTop = cout.scrollHeight;
-        }
-
-        function exec(cmd) {
-            let p = cmd.split(" ");
-            let m = p[0].toLowerCase();
-            switch(m) {
-                case "para": state.p = parseInt(p[1]) || 0; log("Nakit ayarlandı."); break;
-                case "hiz": state.mult = parseInt(p[1]) || 1; log("Hız: x" + state.mult); break;
-                case "duyuru": 
-                    let nbox = document.getElementById('notif');
-                    nbox.innerText = "📢 " + p.slice(1).join(" ").toUpperCase();
-                    setTimeout(() => nbox.innerText = "", 5000);
-                    break;
-                case "ekle":
-                    state.players.push({n: p.slice(1).join("_"), r: "OYUNCU", cash: START_BONUS});
-                    renderNodes(); log("Sanal oyuncu eklendi."); break;
-                case "temizle": cout.innerHTML = ""; break;
-                default: log("GEÇERSİZ KOMUT", "red");
-            }
-            update();
-        }
 
         setInterval(() => {
             state.p += state.income * state.mult;
             state.i += (state.income * 2) * state.mult;
+            state.players[0].c = state.p;
             update();
+            // renderNodes(); // Performans için her saniye yenilemiyoruz sadece para değişiminde
         }, 1000);
     </script>
 </body>
