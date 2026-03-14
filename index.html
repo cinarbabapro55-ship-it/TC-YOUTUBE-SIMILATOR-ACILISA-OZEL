@@ -3,101 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YT Tycoon: GERÇEK ONLİNE</title>
+    <title>YT Tycoon: ADMIN UNLOCK</title>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
     
     <style>
-        :root { --yt-red: #ff0000; --terminal-green: #00ff00; --bg: #050505; --card: #121212; --gold: #ffcc00; }
-        body { font-family: 'Consolas', monospace; background: var(--bg); color: white; margin: 0; overflow-x: hidden; }
+        :root { --yt-red: #ff0000; --terminal-green: #00ff00; --bg: #050505; --gold: #ffcc00; }
+        body { font-family: 'Consolas', monospace; background: var(--bg); color: white; margin: 0; overflow: hidden; }
+        
+        /* TERMINAL PANELİ */
+        #console-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 50%; 
+            background: rgba(0, 0, 0, 0.98); border-bottom: 2px solid var(--terminal-green); 
+            z-index: 10000; display: none; padding: 20px; box-sizing: border-box;
+        }
+        #console-output { height: 85%; overflow-y: auto; font-size: 14px; color: var(--terminal-green); }
+        #console-input { width: 100%; background: transparent; border: none; border-left: 10px solid var(--terminal-green); color: white; font-size: 16px; outline: none; padding-left: 10px; margin-top: 10px; }
+
         .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); background: #0a0a0a; padding: 15px; border-bottom: 1px solid #222; text-align: center; }
         .stat-val { color: var(--yt-red); font-weight: bold; font-size: 20px; }
         .wrapper { display: grid; grid-template-columns: 300px 1fr 280px; height: calc(100vh - 80px); }
         .main-zone { padding: 40px; text-align: center; background: radial-gradient(circle at center, #111 0%, #050505 100%); }
-        .video-btn { width: 160px; height: 160px; border-radius: 50%; border: none; background: var(--yt-red); color: white; cursor: pointer; font-size: 18px; font-weight: bold; box-shadow: 0 0 30px rgba(255, 0, 0, 0.2); transition: 0.1s; }
-        .video-btn:active { transform: scale(0.9); }
+        .video-btn { width: 160px; height: 160px; border-radius: 50%; border: none; background: var(--yt-red); color: white; cursor: pointer; font-weight: bold; box-shadow: 0 0 30px rgba(255, 0, 0, 0.2); transition: 0.1s; }
         .player-list { background: #0d0d0d; padding: 15px; border-left: 1px solid #222; overflow-y: auto; }
-        .player-box { padding: 10px; border-bottom: 1px solid #222; font-size: 12px; margin-bottom: 8px; background: #151515; border-radius: 5px; border-left: 4px solid var(--yt-red); }
+        .player-box { padding: 10px; border-bottom: 1px solid #222; font-size: 12px; margin-bottom: 8px; background: #151515; border-radius: 5px; }
         #login { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        #login input { padding: 12px; width: 250px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; margin-bottom: 15px; text-align: center; font-size: 16px; outline: none; }
-        @media (max-width: 768px) { .wrapper { grid-template-columns: 1fr; } .player-list { height: 250px; } }
+        #login input { padding: 12px; width: 250px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; margin-bottom: 15px; text-align: center; }
     </style>
 </head>
 <body>
 
+    <div id="console-overlay">
+        <div id="console-output"><div>--- ADMIN TERMINAL v15.7 (AKTİF) ---</div></div>
+        <input type="text" id="console-input" placeholder="komut yaz..." autocomplete="off">
+    </div>
+
     <div id="login">
-        <h2 style="letter-spacing: 5px; color: var(--yt-red);">SYSTEM_ONLINE</h2>
-        <input type="text" id="user-in" placeholder="KULLANICI ADI">
-        <button onclick="boot()" style="padding:12px 40px; cursor:pointer; background:var(--yt-red); color:white; border:none; font-weight:bold; border-radius: 5px;">BAĞLAN</button>
+        <h2 style="color: var(--yt-red);">SİSTEME GİRİŞ</h2>
+        <input type="text" id="user-in" placeholder="ADINIZI YAZIN">
+        <button onclick="boot()" style="padding:12px 40px; cursor:pointer; background:var(--yt-red); color:white; border:none; border-radius: 5px;">BAĞLAN</button>
     </div>
 
     <div class="stats-bar">
         <div>ABONE <br><span id="s-abone" class="stat-val">0</span></div>
         <div>BAKİYE <br><span id="s-para" class="stat-val">0 ₺</span></div>
         <div>İZLENME <br><span id="s-izlenme" class="stat-val">0</span></div>
-        <div>SİNYAL <br><span id="s-status" style="color:var(--terminal-green); font-size:12px;">BEKLENİYOR</span></div>
+        <div>YETKİ <br><span id="s-status" style="color:var(--terminal-green);">BAĞLANIYOR...</span></div>
     </div>
 
     <div class="wrapper">
-        <div style="background:#0a0a0a; padding:15px; border-right:1px solid #222;">MARKET (V.16)</div>
+        <div style="background:#0a0a0a; padding:15px; border-right:1px solid #222;">
+            MARKET
+            <br><br>
+            <button onclick="makeMeAdmin()" style="background:#222; color:#444; border:1px solid #333; font-size:10px; cursor:pointer;">GİZLİ YETKİ AL</button>
+        </div>
         <div class="main-zone">
-            <h1 id="brand-name" style="color:#444;">GLOBAL NETWORK</h1>
+            <h1 id="brand-name" style="color:#444;">ONLINE NETWORK</h1>
             <button class="video-btn" onclick="upload()">VİDEO YÜKLE</button>
+            <p style="color:#222; font-size:10px; margin-top:30px;">Terminal için Q veya F2 tuşuna bas.</p>
         </div>
         <div class="player-list">
-            <h3 style="font-size:11px; color:var(--terminal-green);">CANLI OYUNCULAR</h3>
+            <h3 style="font-size:11px; color:var(--terminal-green);">ONLINE OYUNCULAR</h3>
             <div id="node-list"></div>
         </div>
     </div>
 
     <script>
-        // --- BU BÖLÜMÜ FIREBASE'DEN DOLDUR ---
+        // --- BURAYI ÖNCEKİ KODDA ÇALIŞAN BİLGİLERİNLE DOLDUR ---
         const firebaseConfig = {
-            apiKey: "BURAYA_API_KEY_YAZ", 
+            apiKey: "BURAYA_API_KEY", 
             authDomain: "yttycoon-ab399.firebaseapp.com",
             databaseURL: "https://yttycoon-ab399-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "yttycoon-ab399",
             storageBucket: "yttycoon-ab399.appspot.com",
-            messagingSenderId: "BURAYA_SAYILARI_YAZ",
-            appId: "BURAYA_APP_ID_YAZ"
+            messagingSenderId: "SAYILAR",
+            appId: "APP_ID"
         };
 
-        // Firebase Başlatma (Hata kontrolü ile)
-        try {
-            firebase.initializeApp(firebaseConfig);
-            var db = firebase.database();
-        } catch (e) {
-            alert("Firebase Bağlantı Hatası! Bilgileri kontrol et.");
-        }
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        let state = { a: 0, p: 0, i: 0, name: "" };
+        let state = { a: 0, p: 0, i: 0, name: "", role: "OYUNCU", mult: 1 };
 
         function boot() {
             let n = document.getElementById('user-in').value.trim();
             if(n.length < 2) return;
-            
             state.name = n;
+            
+            // HERKESİ KURUCU YAPMAK İÇİN BU SATIRI DEĞİŞTİRDİM
+            state.role = "KURUCU"; 
+            
             document.getElementById('login').style.display = 'none';
             document.getElementById('brand-name').innerText = n.toUpperCase();
-            document.getElementById('s-status').innerText = "BAĞLANDI";
+            updateUI();
 
-            // Online oyuncuları dinle
-            db.ref('players').on('value', (snapshot) => {
-                const data = snapshot.val() || {};
-                renderNodes(data);
-            });
+            db.ref('players').on('value', (snap) => renderNodes(snap.val() || {}));
+            save();
+        }
 
-            save(); // İlk girişi kaydet
+        // Eğer bir şekilde "OYUNCU" kalırsan bu buton seni KURUCU yapar
+        function makeMeAdmin() {
+            state.role = "KURUCU";
+            updateUI();
+            save();
+            log("YETKİ ALINDI: KURUCU MODU AKTİF.");
         }
 
         function save() {
             if(!state.name) return;
             db.ref('players/' + state.name).set({
-                n: state.name,
-                p: state.p,
-                a: state.a,
-                d: /Android|iPhone/i.test(navigator.userAgent) ? "MOBİL" : "PC",
-                t: Date.now()
+                n: state.name, p: state.p, a: state.a, i: state.i, r: state.role,
+                d: "PC", t: Date.now()
             });
         }
 
@@ -105,25 +121,69 @@
             const nl = document.getElementById('node-list');
             nl.innerHTML = "";
             Object.values(players).forEach(p => {
-                nl.innerHTML += `
-                <div class="player-box">
-                    <b style="color:var(--gold)">${p.n}</b> [${p.d}]<br>
-                    <small>${Math.floor(p.p || 0).toLocaleString()} ₺ • ${p.a || 0} Abone</small>
+                let color = p.r === "KURUCU" ? "var(--gold)" : "white";
+                nl.innerHTML += `<div class="player-box" style="border-left: 3px solid ${p.r === 'KURUCU' ? 'var(--gold)' : 'var(--yt-red)'}">
+                    <b style="color:${color}">${p.n}</b> [${p.r}]<br>
+                    <small>${(p.p || 0).toLocaleString()} ₺ • ${p.a || 0} Abone</small>
                 </div>`;
             });
         }
 
         function upload() {
-            state.p += 1000;
-            state.a += 10;
+            state.p += 1000 * state.mult;
+            state.a += 10 * state.mult;
             state.i += 500;
+            updateUI();
+            save();
+        }
+
+        function updateUI() {
             document.getElementById('s-para').innerText = state.p.toLocaleString() + " ₺";
             document.getElementById('s-abone').innerText = state.a.toLocaleString();
             document.getElementById('s-izlenme').innerText = state.i.toLocaleString();
-            save(); // Veriyi anında buluta gönder
+            document.getElementById('s-status').innerText = state.role;
+            document.getElementById('s-status').style.color = state.role === "KURUCU" ? "var(--gold)" : "var(--terminal-green)";
         }
 
-        // Her 5 saniyede bir otomatik senkronize
+        // TERMINAL TUŞLARI
+        window.addEventListener('keydown', (e) => {
+            // Hem Q hem F2 çalışır
+            if(e.key.toLowerCase() === "q" || e.key === "F2") {
+                if(state.role !== "KURUCU") return;
+                const con = document.getElementById('console-overlay');
+                con.style.display = con.style.display === "block" ? "none" : "block";
+                if(con.style.display === "block") document.getElementById('console-input').focus();
+            }
+        });
+
+        document.getElementById('console-input').addEventListener('keypress', (e) => {
+            if(e.key === "Enter") {
+                let val = e.target.value.trim();
+                if(val) exec(val);
+                e.target.value = "";
+            }
+        });
+
+        function log(m, c = "var(--terminal-green)") {
+            const cout = document.getElementById('console-output');
+            let d = document.createElement('div');
+            d.innerText = ">> " + m;
+            d.style.color = c;
+            cout.appendChild(d);
+            cout.scrollTop = cout.scrollHeight;
+        }
+
+        function exec(cmd) {
+            let p = cmd.split(" ");
+            let m = p[0].toLowerCase();
+            if(m === "para") { state.p = parseInt(p[1]) || 0; log("Bakiye: " + p[1]); }
+            else if(m === "hiz") { state.mult = parseInt(p[1]) || 1; log("Hız: x" + p[1]); }
+            else if(m === "reset") { db.ref('players').remove(); log("TÜM SERVER SİLİNDİ", "red"); }
+            else { log("Hata: Komut anlaşılamadı.", "red"); }
+            updateUI();
+            save();
+        }
+
         setInterval(() => { if(state.name) save(); }, 5000);
     </script>
 </body>
